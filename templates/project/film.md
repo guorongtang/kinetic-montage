@@ -1,5 +1,12 @@
 # {{title}}
 
+## 适配判断（来自 fit.json）
+
+- 结论：fit / needs_evidence / not_fit
+- 主行动 / CTA：
+- 证据截图：
+- 真实数字：
+
 ## 一句话主张
 
 

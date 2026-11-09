@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "target": {
+    "type": "website",
+    "name": "Example SaaS",
+    "url": "https://example.com"
+  },
+  "category": "saas",
+  "action": {
+    "type": "signup",
+    "label": "免费开始使用",
+    "primary": true,
+    "status": "verified",
+    "terminal": "注册后进入工作台",
+    "strength": "strong",
+    "secondary": ["预约演示"]
+  },
+  "interface": {
+    "real": true,
+    "capturable": true,
+    "authRequired": false,
+    "screens": [
+      {
+        "id": "entry",
+        "role": "entry",
+        "path": "fit/01-entry.png",
+        "width": 1920,
+        "height": 1080,
+        "shows": "首屏 + 主 CTA"
+      },
+      {
+        "id": "core",
+        "role": "content",
+        "path": "fit/02-core.png",
+        "width": 1920,
+        "height": 1080,
+        "shows": "核心工作台"
+      },
+      {
+        "id": "action",
+        "role": "action",
+        "path": "fit/03-action.png",
+        "width": 1920,
+        "height": 1080,
+        "shows": "注册/创建流程"
+      },
+      {
+        "id": "result",
+        "role": "result",
+        "path": "fit/04-result.png",
+        "width": 1920,
+        "height": 1080,
+        "shows": "完成后的结果页"
+      }
+    ]
+  },
+  "evidence": {
+    "numbers": [
+      { "value": "9.76 MB", "source": "原图大小" },
+      { "value": "100 KB", "source": "目标大小" },
+      { "value": "0.52 秒", "source": "处理耗时" }
+    ],
+    "notes": "把截图放进 fit/，把这里改成真实页面和真实数字。"
+  },
+  "nextStep": null,
+  "checkedAt": "2026-11-09"
+}

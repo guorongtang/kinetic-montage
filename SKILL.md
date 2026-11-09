@@ -1,6 +1,6 @@
 ---
 name: kinetic-montage
-description: 生成 v13 风格的快切动态字卡视频（fast-cut kinetic typography promo）：15–30 秒产品演示、发布预告、功能揭晓、text-card montage，硬切、巨型数字、真实截图、碎片转场、logo 收尾。用户说「v13 风格」「动态字卡」「快切演示片」「30 秒产品片」「kinetic montage」时使用。
+description: 生成 v13 风格的快切动态字卡视频（fast-cut kinetic typography promo）：15–30 秒产品演示、发布预告、功能揭晓、text-card montage，硬切、巨型数字、真实截图、碎片转场、logo 收尾。进入制作前先用 `fit` 判断网站/产品是否有一个真实动作和可截图界面；不适合就不进入制作。用户说「v13 风格」「动态字卡」「快切演示片」「30 秒产品片」「kinetic montage」时使用。
 ---
 
 # kinetic-montage
@@ -12,7 +12,50 @@ description: 生成 v13 风格的快切动态字卡视频（fast-cut kinetic typ
 
 ---
 
-## 0. 先决条件
+## 0. 先判断，再准备环境
+
+### 0.1 适配判断（不通过不要 `init`）
+
+先回答：**这个网站/产品有没有一个真实、可达的动作？**
+
+动作包括：注册、开始使用、购买、预约、报名、下载、投递、订阅、联系、加入 waitlist、预约 demo、关注、分享、捐款。
+不要求全站只有一个动作；为这条片子选一个主行动，其他记 `secondary`。
+
+只要动作真实可达，并且至少有一张能截到的真实页面，就判 `fit`。
+只有三种情况判 `not_fit`：
+
+1. 没有任何动作：纯介绍页。
+2. 动作是假的/不可达：死链、占位、已结束且无候补。
+3. 有动作但完全没有可截图的真实页面，且补不到。
+
+接口暂时拿不到（登录墙、付费墙、需要 demo 账号）记 `needs_evidence`，补不到再判 `not_fit`。
+不按“内容站/品牌站/社区/企业首页/waitlist”等类型排除。
+
+```bash
+cp <skill-dir>/templates/fit.json fit.json
+# 截图放进 fit/，填 target / action / interface / evidence
+node <skill-dir>/bin/kinetic.mjs fit fit.json
+```
+
+- `FIT`：继续。
+- `HOLD`（`needs_evidence`）：补 demo/账号/截图，再跑。
+- `NOT FIT`：停止，换形式，不要 `init`。
+
+判断通过后：
+
+```bash
+node <skill-dir>/bin/kinetic.mjs init my-film --fit fit.json --title "产品名" --duration 30
+```
+
+非网站目标（纯主题片）用 `--topic`：
+
+```bash
+node <skill-dir>/bin/kinetic.mjs init my-film --topic "主题" --title "产品名" --duration 30
+```
+
+细节见 `docs/fit-check.md`，字段见 `schema/fit.schema.json` 和 `templates/fit.json`。
+
+### 0.2 环境先决条件
 
 ```bash
 cd <skill-dir>
@@ -44,11 +87,12 @@ $K doctor                         # 必须全绿
 ### ① 建项目
 
 ```bash
-$K init my-film --title "产品名" --duration 30
+$K init my-film --fit fit.json --title "产品名" --duration 30
 cd my-film
 ```
 
-生成 `timeline.json`（可跑的 14 秒示例）、`film.md`、`script.md`、`assets/`。
+网站/产品目标先过第 0 步的 `fit`；纯主题片把 `--fit fit.json` 换成 `--topic "主题"`。
+生成 `timeline.json`（可跑的 14 秒示例）、`film.md`、`script.md`、`assets/`，以及 `fit.json`（如果传了 `--fit` 或 `--topic`）。
 
 ### ② 写 `film.md`（5 分钟，必须写）
 
@@ -221,6 +265,10 @@ $K build . --name my-film
 | 数字字体不像 | macOS 用 Avenir Next Condensed；其他平台用 Archivo Narrow |
 | 预览打不开 | 端口被占：`--port 4180`；必须从项目目录跑 |
 | 渲染很慢 | 30s/900 帧约 40 秒；不要并行跑多个 build |
+| `kinetic fit` 报 `no_action` | 页面没有明确动作；换有动作的页面，或停止 |
+| `kinetic fit` 报 `no_capturable_interface` | 截图缺失/是 mockup/被登录墙挡住；补真实截图或 demo 账号 |
+| `init --fit` 拒绝 | `fit.json` 结论不是 `fit`；先处理 `not_fit` / `needs_evidence` |
+| `build --require-fit` 拒绝 | 项目根目录没有 `fit.json` 或结论未通过；先跑 `kinetic fit` |
 
 ---
 
@@ -230,6 +278,7 @@ $K build . --name my-film
 - [ ] `out/qa.md`：PASS
 - [ ] `out/contact-sheet.png`：人工扫一遍，没有空镜/错字
 - [ ] `timeline.json` + `assets/`：可重跑
+- [ ] `fit.json`：结论是 `fit`（或 `not_applicable`），截图路径可读
 - [ ] 数字和截图都能在产品里找到出处
 - [ ] 手机上竖屏看一遍（16:9 在手机上是缩小，字要够大）
 
@@ -238,6 +287,7 @@ $K build . --name my-film
 ## 9. 参考
 
 - `docs/style-spec.md`：v13 的全部常数（颜色/字号/运动曲线/节奏）
+- `docs/fit-check.md`：制作前的适配判断（动作/截图/结论）
 - `docs/audio.md`：混音 cue sheet 与响度
 - `docs/troubleshooting.md`：更多报错
 - `examples/v13-regression/`：与 v13 成片逐字节一致的回归样例

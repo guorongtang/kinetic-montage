@@ -8,6 +8,7 @@
   "scripts": {
     "doctor": "node bin/kinetic.mjs doctor",
     "test": "node tools/test-fidelity.mjs",
+    "test:fit": "node tools/test-fit.mjs",
     "regress": "node tools/regress.mjs",
     "build:v13": "node bin/kinetic.mjs build examples/v13-regression --name v13-rebuild"
   },

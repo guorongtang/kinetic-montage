@@ -11,6 +11,7 @@ import { doctor } from '../lib/doctor.mjs';
 import { scaffold } from '../lib/scaffold.mjs';
 import { draftFromWords } from '../lib/draft.mjs';
 import { startPreview } from '../lib/preview.mjs';
+import { validateFit, evaluateFit, copyFitRecord, writeTopicFit } from '../lib/fit.mjs';
 
 const argv = process.argv.slice(2);
 const cmd = argv[0];
@@ -35,6 +36,82 @@ const dir = pos[0] || '.';
 const slug = s => String(s || 'film').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5-]+/g, '-').replace(/^-|-$/g, '') || 'film';
 const rel = p => path.relative(process.cwd(), p) || '.';
 
+function printFit(fit, check) {
+  const labels = { fit: 'FIT', not_fit: 'NOT FIT', needs_evidence: 'HOLD', not_applicable: 'N/A' };
+  const confidence = check.confidence ? ` (${check.confidence})` : '';
+  const target = fit.target?.url || fit.target?.ref || fit.target?.name || '';
+  console.log(`${labels[check.verdict] || check.verdict}${confidence}  ${target}`);
+  if (fit.action?.label) console.log(`  action: ${fit.action.label} (${fit.action.type})`);
+  if (Array.isArray(fit.interface?.screens)) {
+    const roles = fit.interface.screens.map(s => s.role).join('/');
+    console.log(`  screens: ${fit.interface.screens.length}${roles ? ` (${roles})` : ''}`);
+  }
+  if (check.productionReady != null) console.log(`  productionReady: ${check.productionReady}`);
+  for (const r of check.reasons || []) console.log(`  - ${r}`);
+  for (const b of check.blockers || []) console.log(`  ✗ ${b}`);
+  if (check.nextStep) console.log(`  → ${check.nextStep}`);
+}
+
+function fitExitCode(check) {
+  const code = { fit: 0, not_applicable: 0, not_fit: 2, needs_evidence: 3 }[check.verdict];
+  return code == null ? 4 : code;
+}
+
+function readFit(file) {
+  const abs = path.resolve(file);
+  if (!fs.existsSync(abs)) throw new Error(`fit file not found: ${abs}`);
+  return { abs, fit: JSON.parse(fs.readFileSync(abs, 'utf8')) };
+}
+
+function fitGate(root, requireFit) {
+  const file = path.join(root, 'fit.json');
+  if (!fs.existsSync(file)) {
+    if (requireFit) {
+      console.error('✗ fit.json missing (run `kinetic fit` first)');
+      process.exitCode = 2;
+      return false;
+    }
+    return true;
+  }
+
+  let fit;
+  try {
+    fit = JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (e) {
+    console.error(`✗ fit.json invalid: ${e.message}`);
+    if (requireFit) process.exitCode = 4;
+    return !requireFit;
+  }
+
+  const { errors, warnings } = validateFit(fit, root);
+  for (const w of warnings) console.error(`⚠ fit: ${w}`);
+  if (errors.length) {
+    for (const e of errors) console.error(`✗ fit: ${e}`);
+    if (requireFit) {
+      process.exitCode = 4;
+      return false;
+    }
+    return true;
+  }
+
+  const check = evaluateFit(fit);
+  if (check.verdict === 'fit' || check.verdict === 'not_applicable') {
+    if (check.verdict === 'fit' && check.productionReady === false) {
+      console.error('⚠ fit: productionReady=false（截图偏少，成片需多用字卡）');
+    }
+    return true;
+  }
+
+  printFit(fit, check);
+  if (requireFit) {
+    process.exitCode = fitExitCode(check);
+    return false;
+  }
+  console.error('⚠ fit 未通过；继续渲染（--require-fit 可强制拦截）');
+  return true;
+}
+
+
 function load(dir) {
   const p = loadProject(dir);
   if (p.warnings.length) {
@@ -54,15 +131,16 @@ async function main() {
     console.log(`kinetic — fast-cut kinetic typography generator
 
   kinetic doctor
-  kinetic init <dir> [--title "..." --duration 14 --force]
+  kinetic fit <fit.json> [--json]
+  kinetic init <dir> [--fit fit.json | --topic "..."] [--title "..." --duration 14 --force --require-fit]
   kinetic check <dir>
   kinetic still <dir> --t 0,3.2 [--out path]
   kinetic sheet <dir>
   kinetic preview <dir> [--port 4173]
   kinetic draft <dir> --words <vo.words.json> [--force]
-  kinetic render <dir> [--from 0 --to 900]
+  kinetic render <dir> [--from 0 --to 900] [--require-fit]
   kinetic mix <dir>
-  kinetic build <dir> [--name slug --no-qa]
+  kinetic build <dir> [--name slug --no-qa --require-fit]
   kinetic qa <dir> [--video path]
   kinetic eject <dir>
 `);
@@ -71,12 +149,81 @@ async function main() {
 
   if (cmd === 'doctor') return void doctor();
 
+  if (cmd === 'fit') {
+    let loaded;
+    try {
+      loaded = readFit(pos[0] || 'fit.json');
+    } catch (e) {
+      console.error('✗', e.message);
+      process.exitCode = 4;
+      return;
+    }
+    const { fit, abs } = loaded;
+    const { errors, warnings } = validateFit(fit, path.dirname(abs));
+    for (const w of warnings) console.error(`⚠ ${w}`);
+    if (errors.length) {
+      for (const e of errors) console.error(`✗ ${e}`);
+      process.exitCode = 4;
+      return;
+    }
+    const check = evaluateFit(fit);
+    if (flags.json) console.log(JSON.stringify({ target: fit.target, action: fit.action, ...check }, null, 2));
+    else printFit(fit, check);
+    process.exitCode = fitExitCode(check);
+    return;
+  }
+
   if (cmd === 'init') {
+    const topic = typeof flags.topic === 'string'
+      ? flags.topic
+      : flags.topic
+        ? (flags.title || path.basename(path.resolve(dir)))
+        : null;
+    if (flags.fit && topic) throw new Error('use either --fit or --topic, not both');
+    if (flags['require-fit'] && !flags.fit && !topic) {
+      throw new Error('--require-fit requires --fit <fit.json> or --topic');
+    }
+
+    let fit = null;
+    if (flags.fit) {
+      let loaded;
+      try {
+        loaded = readFit(flags.fit);
+      } catch (e) {
+        console.error('✗', e.message);
+        process.exitCode = 4;
+        return;
+      }
+      fit = loaded.fit;
+      const { errors, warnings } = validateFit(fit, path.dirname(loaded.abs));
+      for (const w of warnings) console.error(`⚠ ${w}`);
+      if (errors.length) {
+        for (const e of errors) console.error(`✗ ${e}`);
+        process.exitCode = 4;
+        return;
+      }
+      const check = evaluateFit(fit);
+      if (check.verdict !== 'fit') {
+        printFit(fit, check);
+        process.exitCode = check.verdict === 'not_applicable' ? 2 : fitExitCode(check);
+        return;
+      }
+    }
+
     const root = scaffold(dir, {
-      title: flags.title,
+      title: flags.title || fit?.target?.name || topic || undefined,
       duration: +(flags.duration || 14),
       force: !!flags.force
     });
+    if (flags.fit) {
+      copyFitRecord(flags.fit, root);
+      console.log('fit copied → fit.json');
+    } else if (topic) {
+      writeTopicFit(root, topic);
+      console.log('fit not_applicable (topic)');
+    } else {
+      console.error('⚠ no fit.json; run `kinetic fit` first if this is a website');
+    }
     console.log('created', rel(root));
     return;
   }
@@ -94,10 +241,32 @@ async function main() {
     const fp = fingerprint(film);
     console.log('ok:', film.shots.length, 'shots,', film.meta.duration + 's');
     console.log(JSON.stringify(fp, null, 2));
+    const fitFile = path.join(root, 'fit.json');
+    if (fs.existsSync(fitFile)) {
+      try {
+        const fit = JSON.parse(fs.readFileSync(fitFile, 'utf8'));
+        const { errors, warnings } = validateFit(fit, root);
+        for (const w of warnings) console.log('  ⚠ fit: ' + w);
+        if (errors.length) {
+          console.log('fit: invalid');
+          for (const e of errors) console.log('  ✗ fit: ' + e);
+        } else {
+          const check = evaluateFit(fit);
+          console.log(`fit: ${check.verdict}${check.confidence ? ` (${check.confidence})` : ''}`);
+          const endcard = film.shots.find(s => s.type === 'endcard');
+          if (fit.action?.label && endcard?.cta && !endcard.cta.includes(fit.action.label) && !fit.action.label.includes(endcard.cta)) {
+            console.log(`  ⚠ endcard CTA "${endcard.cta}" 和 fit.action "${fit.action.label}" 不一致`);
+          }
+        }
+      } catch (e) {
+        console.log('fit: unreadable (' + e.message + ')');
+      }
+    }
     return;
   }
 
   if (cmd === 'render') {
+    if (!fitGate(root, !!flags['require-fit'])) return;
     const r = await renderFrames(root, film, {
       dest: path.join(root, 'work', 'frames'),
       from: flags.from != null ? +flags.from : 0,
@@ -174,6 +343,7 @@ async function main() {
   }
 
   if (cmd === 'build') {
+    if (!fitGate(root, !!flags['require-fit'])) return;
     const name = slug(flags.name || film.meta.title || path.basename(root));
     const framesDir = path.join(root, 'work', 'frames');
     const r = await renderFrames(root, film, {

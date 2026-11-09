@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "kinetic-montage fit record",
+  "description": "Pre-flight suitability record for a website/app/mini-program/plugin. The verdict is computed by `kinetic fit`; it is not stored here.",
+  "type": "object",
+  "required": ["target", "checkedAt"],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "target": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["website", "app", "miniprogram", "plugin", "none"]
+        },
+        "name": { "type": "string" },
+        "url": { "type": "string" },
+        "ref": { "type": "string" }
+      }
+    },
+    "category": {
+      "type": "string",
+      "description": "Descriptive label, not a gate. Examples: saas, ai_tool, app, miniprogram, plugin, course, event, crowdfunding, recruiting, finance, insurance, health, dtc, ecommerce_product, content, portfolio, community, other."
+    },
+    "action": {
+      "type": "object",
+      "required": ["type", "label", "status"],
+      "properties": {
+        "type": {
+          "enum": [
+            "signup", "start", "purchase", "book", "download", "apply",
+            "subscribe", "contact", "waitlist", "demo", "donate",
+            "follow", "share", "other"
+          ]
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "primary": { "type": "boolean" },
+        "status": { "enum": ["verified", "blocked", "broken"] },
+        "terminal": { "type": "string" },
+        "strength": { "enum": ["strong", "medium", "weak"] },
+        "secondary": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "interface": {
+      "type": "object",
+      "properties": {
+        "real": { "type": "boolean" },
+        "capturable": { "type": "boolean" },
+        "authRequired": { "type": "boolean" },
+        "screens": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/screen" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "numbers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "value": { "type": "string" },
+              "source": { "type": "string" }
+            }
+          }
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "nextStep": {
+      "type": ["string", "null"]
+    },
+    "checkedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Used when target.type=none."
+    }
+  },
+  "definitions": {
+    "screen": {
+      "type": "object",
+      "required": ["role", "path", "width", "height", "shows"],
+      "properties": {
+        "id": { "type": "string" },
+        "role": {
+          "enum": ["entry", "content", "action", "result", "detail", "other"]
+        },
+        "path": { "type": "string", "minLength": 1 },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "shows": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

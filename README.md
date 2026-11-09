@@ -39,6 +39,31 @@
 
 ---
 
+## 什么网站适合做这个片子
+
+只要网站/产品有**一个真实、可达的动作**，并且至少有一张**能截到的真实页面**，就适合。
+
+动作包括：注册、开始使用、购买、预约、报名、下载、投递、申请、订阅、联系、加入 waitlist、预约 demo、关注、分享。
+不要求全站只有一个动作；为这条片子选一个主行动即可。不按“内容站/品牌站/社区/企业首页/waitlist”等类型排除。
+
+截图少于 4 张也能做，只是成片会多用字卡；4–8 张是制作准备度，不是适合性门槛。
+
+制作前先判断：
+
+```bash
+cp templates/fit.json fit.json
+# 把截图放进 fit/，填 target / action / interface / evidence
+node bin/kinetic.mjs fit fit.json
+```
+
+- `FIT` → `node bin/kinetic.mjs init my-film --fit fit.json`
+- `HOLD`（`needs_evidence`）→ 补 demo/账号/截图，再跑
+- `NOT FIT` → 停止，换形式
+
+细节见 `docs/fit-check.md`。
+
+---
+
 ## 一条片子由什么组成
 
 `timeline.json` 是唯一需要改的文件。它是一张表，每一行是一个镜头，写着“从第几秒开始、屏幕上出现什么”。
@@ -107,8 +132,9 @@ npm install
 npx playwright install chromium
 node bin/kinetic.mjs doctor
 
-# 新建项目
+# 新建项目（网站/产品建议先过 fit，见 docs/fit-check.md）
 node bin/kinetic.mjs init my-film --title "我的产品" --duration 20
+# 或者：node bin/kinetic.mjs init my-film --fit fit.json --title "我的产品" --duration 20
 cd my-film
 
 # 改 timeline.json、把截图放进 assets/stills/、把音乐放进 assets/audio/
@@ -149,6 +175,7 @@ open examples/12s-min/out/12s-min.mp4
 
 ```bash
 npm test          # 12 个参考帧的 PSNR
+npm run test:fit  # 适配判断的单元测试
 npm run regress   # 重建整片，要求 md5 完全一致
 ```
 
@@ -161,7 +188,8 @@ npm run regress   # 重建整片，要求 md5 完全一致
 | 命令 | 作用 |
 |---|---|
 | `doctor` | 检查 node / ffmpeg / Chromium / 字体 |
-| `init <dir>` | 生成一个能跑的 project 骨架 |
+| `fit <fit.json>` | 制作前判断网站/产品适不适合；输出 FIT / HOLD / NOT FIT |
+| `init <dir>` | 生成一个能跑的 project 骨架；`--fit fit.json` 或 `--topic "..."` |
 | `check <dir>` | 检查 schema、素材、文案长度和节奏，不渲染 |
 | `draft <dir> --words <json>` | 按旁白的词级时间戳，自动生成初版镜头表 |
 | `still <dir> --t 3.2` | 只渲染某一秒，看看这一帧 |
@@ -169,7 +197,7 @@ npm run regress   # 重建整片，要求 md5 完全一致
 | `preview <dir>` | 本地播放器，可以拖时间轴（`http://127.0.0.1:4173`） |
 | `render <dir>` | 只出帧 → `work/frames/` |
 | `mix <dir>` | 只混音 → `out/master.wav` |
-| `build <dir>` | 渲染 + 混音 + 编码 + QA，一条命令出片 |
+| `build <dir>` | 渲染 + 混音 + 编码 + QA，一条命令出片；`--require-fit` 强制先过适配判断 |
 | `qa <dir> --video <mp4>` | 单独跑技术 + 风格报告 |
 | `eject <dir>` | 把引擎源码复制进项目，之后允许硬改渲染代码 |
 
@@ -181,12 +209,14 @@ npm run regress   # 重建整片，要求 md5 完全一致
 kinetic-montage/
 ├─ SKILL.md                 # agent 读这个：什么时候用、怎么拆脚本、怎么验收
 ├─ bin/kinetic.mjs          # CLI
-├─ lib/                     # spec / render / audio / encode / qa / draft / preview
+├─ lib/                     # spec / render / audio / encode / qa / draft / preview / fit
 ├─ engine/                  # Canvas 渲染器（core / cards / engine + 内置字体）
 ├─ presets/v13.json         # 这套风格的全部常数
 ├─ schema/timeline.schema.json
+├─ schema/fit.schema.json    # 制作前适配记录
 ├─ templates/project/       # film.md / script.md / timeline.json
-├─ docs/                    # style-spec / audio / troubleshooting
+├─ templates/fit.json       # fit.json 模板
+├─ docs/                    # style-spec / fit-check / audio / troubleshooting
 ├─ examples/
 │  ├─ v13-regression/       # 与参考片逐字节一致的回归
 │  └─ 12s-min/              # 12 秒最小样例
@@ -202,6 +232,7 @@ kinetic-montage/
 2. **渲染是纯函数**：`draw(t)` 只依赖 `t` 和 `timeline.json`；随机数用 seeded hash。
 3. **QA 是门禁**：时长 / 帧数 / 响度 / 静止段 / 风格指纹不过，不算交付。
 4. **逃生口**：`eject` 把引擎复制进项目，之后可以用 `--engine .` 跑改过的版本。
+5. **适配是旁路**：`fit.json` 不进入 `timeline.json`，不参与 `draw(t)`，不影响帧和 mp4。
 
 ---
 

@@ -107,6 +107,34 @@ node bin/kinetic.mjs preview . --port 4180
 
 ---
 
+## 适配判断（fit）
+
+**`kinetic fit` 报 `no_action`**
+
+页面没有注册/购买/预约/下载/申请/订阅/联系/加入 waitlist 等动作。换一个有动作的具体页面；纯介绍页不做。
+
+**`kinetic fit` 报 `no_capturable_interface`**
+
+截图缺失、是 mockup/stock/Figma，或全部被登录墙挡住。补真实截图；需要账号就向用户要 demo 账号。
+
+**`kinetic fit` 报 `unreachable_action`**
+
+按钮是死链、占位、“即将上线且没有 waitlist”、活动已结束且无候补。动作不可达，不做。
+
+**`init --fit` 拒绝**
+
+`fit.json` 的结论不是 `fit`。`HOLD` 先补证据；`NOT FIT` 停止。不要手改结论。
+
+**`build --require-fit` 拒绝**
+
+项目根目录没有 `fit.json`，或结论未通过。先跑 `node bin/kinetic.mjs fit fit.json`，再 build。老项目不想被拦就去掉 `--require-fit`。
+
+**旧项目没有 `fit.json` 还能 build 吗**
+
+能。默认不拦；只有显式加 `--require-fit` 才强制。
+
+---
+
 ## QA
 
 **loudness 不在 −14 ±1.5**
