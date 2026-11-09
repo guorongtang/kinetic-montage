@@ -1,0 +1,70 @@
+{
+  "name": "v13",
+  "description": "fast-cut kinetic typography montage — 4-color, big condensed numerals, particle digits, shard cuts",
+  "theme": {
+    "colors": {
+      "ink": "#0B0B0D",
+      "cream": "#F3F0E8",
+      "blue": "#2F5BFF",
+      "red": "#FF3B1F",
+      "text": "#14161A",
+      "muted": "#8A8A90",
+      "muted2": "#6B635A",
+      "sub": "#4A4B45"
+    },
+    "fonts": {
+      "number": "\"Avenir Next Condensed\",\"Archivo Narrow\",\"Helvetica Neue\",Arial,sans-serif",
+      "cjk": "\"PingFang SC\",\"Noto Sans SC\",\"Helvetica Neue\",Arial,sans-serif"
+    }
+  },
+  "motion": {
+    "entry": 0.42,
+    "numberSize": 560,
+    "numberSizeUnit": 420,
+    "numberIn": 0.12,
+    "numberOut": 0.7,
+    "numberExit": "shot",
+    "wordSize": 260,
+    "imageZoom": [1.04, 1.1],
+    "imageMotion": "shot",
+    "shard": true,
+    "shardWindow": 0.085,
+    "shardGrid": [12, 7],
+    "shardShift": [320, 240]
+  },
+  "post": {
+    "grain": 0,
+    "scanlines": 0,
+    "flicker": 0
+  },
+  "encode": {
+    "preset": "slow",
+    "crf": 22,
+    "audioBitrate": "256k"
+  },
+  "audio": {
+    "vo": { "at": 0.2, "peak": -2.5 },
+    "music": { "gain": -19, "fadeIn": 0.4, "fadeOutAt": 29.0, "fadeOut": 1.0 },
+    "sfxPeak": { "boom": -8, "whoosh": -14, "tick": -11, "click": -9, "drop": -9 },
+    "loudness": { "I": -14, "TP": -1, "LRA": 11 }
+  },
+  "rules": {
+    "minShot": 0.28,
+    "maxShot": 1.45,
+    "endcardMin": 4,
+    "endcardMax": 8,
+    "maxLineChars": 6,
+    "maxLines": 2,
+    "staticMax": 1.2,
+    "voLead": 0.6
+  },
+  "fingerprint": {
+    "compare": false,
+    "cutsPer10s": 19,
+    "avgShot": 0.52,
+    "endcardRatio": 0.26,
+    "staticRatio": 0.46,
+    "meanFrameDiff": 6.65,
+    "typeMix": { "word": 19, "number": 14, "image": 9 }
+  }
+}

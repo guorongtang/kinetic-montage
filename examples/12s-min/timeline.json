@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "title": "12s-min",
+    "preset": "v13",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12
+  },
+  "audio": {
+    "mode": "build",
+    "music": {
+      "src": "audio/music.m4a",
+      "in": 0,
+      "len": 12,
+      "gain": -19,
+      "fadeIn": 0.4,
+      "fadeOutAt": 10.8,
+      "fadeOut": 1
+    }
+  },
+  "shots": [
+    {
+      "t": 0.0,
+      "type": "number",
+      "value": "3",
+      "unit": "步",
+      "bg": "ink",
+      "fg": "cream",
+      "kicker": "上手"
+    },
+    {
+      "t": 0.9,
+      "type": "word",
+      "lines": [
+        "拖进去"
+      ],
+      "bg": "cream",
+      "fg": "text",
+      "size": 280
+    },
+    {
+      "t": 2.0,
+      "type": "number",
+      "value": "1",
+      "unit": "次",
+      "bg": "red",
+      "fg": "cream"
+    },
+    {
+      "t": 2.8,
+      "type": "word",
+      "lines": [
+        "点一下"
+      ],
+      "bg": "ink",
+      "fg": "cream",
+      "size": 280
+    },
+    {
+      "t": 3.8,
+      "type": "word",
+      "lines": [
+        "就好了"
+      ],
+      "bg": "cream",
+      "fg": "text",
+      "size": 280
+    },
+    {
+      "t": 4.8,
+      "type": "number",
+      "value": "100",
+      "unit": "KB",
+      "bg": "blue",
+      "fg": "cream"
+    },
+    {
+      "t": 6.0,
+      "type": "word",
+      "lines": [
+        "不用等"
+      ],
+      "bg": "ink",
+      "fg": "cream",
+      "size": 260
+    },
+    {
+      "t": 7.0,
+      "type": "word",
+      "lines": [
+        "压到",
+        "你要的数"
+      ],
+      "bg": "cream",
+      "fg": "text",
+      "size": 230
+    },
+    {
+      "t": 8.0,
+      "type": "endcard",
+      "bg": "cream",
+      "brand": "KINETIC",
+      "tagline": "三步，压到你要的数",
+      "url": "example.com",
+      "cta": "免费 · 打开就能用"
+    }
+  ]
+}

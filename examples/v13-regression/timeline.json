@@ -1,0 +1,418 @@
+{
+  "meta": {
+    "title": "compress2size · v13 regression",
+    "preset": "v13",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 30
+  },
+  "audio": {
+    "mode": "master",
+    "master": {
+      "src": "audio/master.m4a",
+      "encode": "copy"
+    }
+  },
+  "fingerprint": {
+    "compare": true
+  },
+  "motion": {
+    "numberExit": "legacy",
+    "imageMotion": "legacy"
+  },
+  "shots": [
+    {
+      "t": 0,
+      "type": "number",
+      "value": "9.76",
+      "unit": "MB",
+      "bg": "ink",
+      "fg": "cream",
+      "kicker": "你这张照片"
+    },
+    {
+      "t": 0.52,
+      "type": "word",
+      "lines": [
+        "超了"
+      ],
+      "bg": "red",
+      "fg": "cream",
+      "size": 300
+    },
+    {
+      "t": 0.95,
+      "type": "number",
+      "value": "9.76",
+      "unit": "MB",
+      "bg": "ink",
+      "fg": "cream"
+    },
+    {
+      "t": 1.36,
+      "type": "number",
+      "value": "100",
+      "unit": "KB",
+      "bg": "cream",
+      "fg": "red",
+      "kicker": "要求"
+    },
+    {
+      "t": 1.82,
+      "type": "word",
+      "lines": [
+        "只收"
+      ],
+      "bg": "ink",
+      "fg": "cream",
+      "size": 280
+    },
+    {
+      "t": 2.2,
+      "type": "number",
+      "value": "100",
+      "unit": "KB",
+      "bg": "blue",
+      "fg": "cream"
+    },
+    {
+      "t": 2.52,
+      "type": "image",
+      "src": "fixtures/food.jpg",
+      "mode": "cover",
+      "bg": "cream",
+      "caption": "9.76 MB"
+    },
+    {
+      "t": 2.9,
+      "type": "number",
+      "value": "97",
+      "unit": "×",
+      "bg": "ink",
+      "fg": "red",
+      "kicker": "差了"
+    },
+    {
+      "t": 3.32,
+      "type": "word",
+      "lines": [
+        "上传被拒"
+      ],
+      "bg": "red",
+      "fg": "cream",
+      "size": 220,
+      "stamp": true
+    },
+    {
+      "t": 3.7,
+      "type": "word",
+      "lines": [
+        "所以"
+      ],
+      "bg": "cream",
+      "fg": "text",
+      "size": 240
+    },
+    {
+      "t": 4.08,
+      "type": "word",
+      "lines": [
+        "现在"
+      ],
+      "bg": "cream",
+      "fg": "text",
+      "size": 260
+    },
+    {
+      "t": 4.36,
+      "type": "word",
+      "lines": [
+        "反过来"
+      ],
+      "bg": "cream",
+      "fg": "red",
+      "size": 280
+    },
+    {
+      "t": 4.8,
+      "type": "word",
+      "lines": [
+        "先给它"
+      ],
+      "bg": "ink",
+      "fg": "cream",
+      "size": 220
+    },
+    {
+      "t": 5.1,
+      "type": "word",
+      "lines": [
+        "一个数"
+      ],
+      "bg": "ink",
+      "fg": "blue",
+      "size": 240
+    },
+    {
+      "t": 5.44,
+      "type": "number",
+      "value": "100",
+      "unit": "KB",
+      "bg": "cream",
+      "fg": "text",
+      "kicker": "目标"
+    },
+    {
+      "t": 5.86,
+      "type": "image",
+      "src": "stills/01-empty.png",
+      "mode": "shot",
+      "bg": "ink",
+      "caption": "不是滑块，是键盘"
+    },
+    {
+      "t": 6.2,
+      "type": "word",
+      "lines": [
+        "三张"
+      ],
+      "bg": "cream",
+      "fg": "text",
+      "size": 280
+    },
+    {
+      "t": 6.52,
+      "type": "word",
+      "lines": [
+        "一起"
+      ],
+      "bg": "cream",
+      "fg": "blue",
+      "size": 280
+    },
+    {
+      "t": 6.86,
+      "type": "image",
+      "src": "stills/02-three.png",
+      "mode": "shot",
+      "bg": "ink",
+      "caption": "拖进去"
+    },
+    {
+      "t": 7.4,
+      "type": "image",
+      "src": "stills/03-working.png",
+      "mode": "shot",
+      "bg": "ink",
+      "caption": "跑起来了"
+    },
+    {
+      "t": 8.44,
+      "type": "image",
+      "src": "stills/04-row1.png",
+      "mode": "shot",
+      "bg": "ink",
+      "caption": "点一下"
+    },
+    {
+      "t": 8.86,
+      "type": "image",
+      "src": "stills/05-row2.png",
+      "mode": "shot",
+      "bg": "ink",
+      "caption": "三张都到"
+    },
+    {
+      "t": 9.3,
+      "type": "number",
+      "value": "100",
+      "unit": "KB",
+      "bg": "ink",
+      "fg": "cream"
+    },
+    {
+      "t": 9.94,
+      "type": "number",
+      "value": "99",
+      "unit": "KB",
+      "bg": "ink",
+      "fg": "blue"
+    },
+    {
+      "t": 10.38,
+      "type": "number",
+      "value": "99",
+      "unit": "KB",
+      "bg": "ink",
+      "fg": "blue"
+    },
+    {
+      "t": 10.8,
+      "type": "number",
+      "value": "99",
+      "unit": "KB",
+      "bg": "blue",
+      "fg": "cream"
+    },
+    {
+      "t": 11.22,
+      "type": "image",
+      "src": "stills/06-all100.png",
+      "mode": "shot",
+      "bg": "ink",
+      "caption": "一张没漏"
+    },
+    {
+      "t": 12,
+      "type": "number",
+      "value": "165",
+      "unit": "×",
+      "bg": "ink",
+      "fg": "red",
+      "kicker": "9.76 MB → 59 KB"
+    },
+    {
+      "t": 12.6,
+      "type": "word",
+      "lines": [
+        "改成"
+      ],
+      "bg": "cream",
+      "fg": "text",
+      "size": 240
+    },
+    {
+      "t": 13.16,
+      "type": "number",
+      "value": "60",
+      "bg": "blue",
+      "fg": "cream"
+    },
+    {
+      "t": 13.7,
+      "type": "number",
+      "value": "60",
+      "unit": "KB",
+      "bg": "cream",
+      "fg": "text",
+      "kicker": "它就给你"
+    },
+    {
+      "t": 14.1,
+      "type": "image",
+      "src": "stills/09-all60.png",
+      "mode": "shot",
+      "bg": "ink",
+      "caption": "60 / 60 / 59"
+    },
+    {
+      "t": 15.5,
+      "type": "word",
+      "lines": [
+        "不装。"
+      ],
+      "bg": "ink",
+      "fg": "cream",
+      "size": 260
+    },
+    {
+      "t": 16,
+      "type": "word",
+      "lines": [
+        "不上传。"
+      ],
+      "bg": "ink",
+      "fg": "cream",
+      "size": 260
+    },
+    {
+      "t": 16.6,
+      "type": "word",
+      "lines": [
+        "不用注册"
+      ],
+      "bg": "cream",
+      "fg": "text",
+      "size": 240
+    },
+    {
+      "t": 17.64,
+      "type": "word",
+      "lines": [
+        "全在"
+      ],
+      "bg": "ink",
+      "fg": "blue",
+      "size": 260
+    },
+    {
+      "t": 18.12,
+      "type": "word",
+      "lines": [
+        "浏览器里",
+        "跑完"
+      ],
+      "bg": "ink",
+      "fg": "cream",
+      "size": 200
+    },
+    {
+      "t": 18.7,
+      "type": "image",
+      "src": "stills/06-all100.png",
+      "mode": "shot",
+      "bg": "ink",
+      "caption": "文件没离开这台机器"
+    },
+    {
+      "t": 19.26,
+      "type": "number",
+      "value": "4",
+      "unit": "秒",
+      "bg": "red",
+      "fg": "cream"
+    },
+    {
+      "t": 19.7,
+      "type": "word",
+      "lines": [
+        "三张",
+        "一次点击"
+      ],
+      "bg": "ink",
+      "fg": "cream",
+      "size": 190
+    },
+    {
+      "t": 20.82,
+      "type": "word",
+      "lines": [
+        "压到"
+      ],
+      "bg": "cream",
+      "fg": "text",
+      "size": 260
+    },
+    {
+      "t": 21.2,
+      "type": "word",
+      "lines": [
+        "你要的",
+        "那个数"
+      ],
+      "bg": "cream",
+      "fg": "red",
+      "size": 230
+    },
+    {
+      "t": 22.1,
+      "type": "endcard",
+      "bg": "cream",
+      "brand": "compress2size",
+      "tagline": "压到你要的那个数",
+      "url": "compress2size.com",
+      "cta": "免费 · 打开就能用"
+    }
+  ]
+}

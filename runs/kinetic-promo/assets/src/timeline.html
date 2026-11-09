@@ -1,0 +1,41 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  html, body { margin: 0; background: #0d1117; color: #c9d1d9;
+    font-family: "SF Mono", ui-monospace, Menlo, monospace; }
+  .win { width: 1600px; height: 1000px; box-sizing: border-box; padding: 44px 56px; }
+  .bar { display: flex; gap: 10px; align-items: center; margin-bottom: 30px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .name { margin-left: 16px; color: #8b949e; font-size: 28px; }
+  pre { margin: 0; font-size: 34px; line-height: 1.48; white-space: pre; }
+  .k { color: #79c0ff; } .s { color: #a5d6ff; } .n { color: #ffa657; }
+  .p { color: #8b949e; } .t { color: #7ee787; }
+</style></head>
+<body>
+<div class="win">
+  <div class="bar">
+    <span class="dot" style="background:#ff5f57"></span>
+    <span class="dot" style="background:#febc2e"></span>
+    <span class="dot" style="background:#28c840"></span>
+    <span class="name">timeline.json</span>
+  </div>
+<pre><span class="p">{</span>
+  <span class="k">"meta"</span><span class="p">:</span> <span class="p">{</span> <span class="k">"preset"</span><span class="p">:</span> <span class="s">"v13"</span><span class="p">,</span> <span class="k">"duration"</span><span class="p">:</span> <span class="n">30</span> <span class="p">},</span>
+  <span class="k">"shots"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="k">"t"</span><span class="p">:</span> <span class="n">0.00</span><span class="p">,</span> <span class="k">"type"</span><span class="p">:</span> <span class="s">"number"</span><span class="p">,</span>
+      <span class="k">"value"</span><span class="p">:</span> <span class="s">"9.76"</span><span class="p">,</span> <span class="k">"unit"</span><span class="p">:</span> <span class="s">"MB"</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="k">"t"</span><span class="p">:</span> <span class="n">0.52</span><span class="p">,</span> <span class="k">"type"</span><span class="p">:</span> <span class="s">"word"</span><span class="p">,</span>
+      <span class="k">"lines"</span><span class="p">:</span> <span class="p">[</span><span class="s">"超了"</span><span class="p">],</span> <span class="k">"bg"</span><span class="p">:</span> <span class="s">"red"</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="k">"t"</span><span class="p">:</span> <span class="n">1.36</span><span class="p">,</span> <span class="k">"type"</span><span class="p">:</span> <span class="s">"number"</span><span class="p">,</span>
+      <span class="k">"value"</span><span class="p">:</span> <span class="s">"100"</span><span class="p">,</span> <span class="k">"unit"</span><span class="p">:</span> <span class="s">"KB"</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="k">"t"</span><span class="p">:</span> <span class="n">5.86</span><span class="p">,</span> <span class="k">"type"</span><span class="p">:</span> <span class="s">"image"</span><span class="p">,</span>
+      <span class="k">"src"</span><span class="p">:</span> <span class="s">"stills/01-empty.png"</span><span class="p">,</span>
+      <span class="k">"caption"</span><span class="p">:</span> <span class="s">"不是滑块，是键盘"</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="k">"t"</span><span class="p">:</span> <span class="n">12.00</span><span class="p">,</span> <span class="k">"type"</span><span class="p">:</span> <span class="s">"number"</span><span class="p">,</span>
+      <span class="k">"value"</span><span class="p">:</span> <span class="s">"165"</span><span class="p">,</span> <span class="k">"unit"</span><span class="p">:</span> <span class="s">"×"</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="k">"t"</span><span class="p">:</span> <span class="n">22.10</span><span class="p">,</span> <span class="k">"type"</span><span class="p">:</span> <span class="s">"endcard"</span><span class="p">,</span>
+      <span class="k">"brand"</span><span class="p">:</span> <span class="s">"compress2size"</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span></pre>
+</div>
+</body></html>

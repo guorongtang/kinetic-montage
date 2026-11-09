@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "YOUR FILM",
+    "preset": "v13",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 14
+  },
+  "audio": {
+    "mode": "build",
+    "music": {
+      "src": "audio/music.m4a",
+      "in": 0,
+      "len": 14,
+      "gain": -19,
+      "fadeIn": 0.4,
+      "fadeOutAt": 12.8,
+      "fadeOut": 1
+    }
+  },
+  "shots": [
+    { "t": 0.0, "type": "number", "value": "100", "unit": "KB", "bg": "ink", "fg": "cream", "kicker": "目标" },
+    { "t": 0.85, "type": "word", "lines": ["反过来"], "bg": "cream", "fg": "text", "size": 280 },
+    { "t": 1.7, "type": "number", "value": "3", "unit": "张", "bg": "red", "fg": "cream" },
+    { "t": 2.55, "type": "word", "lines": ["一起拖"], "bg": "ink", "fg": "cream", "size": 260 },
+    { "t": 3.4, "type": "word", "lines": ["点一下"], "bg": "cream", "fg": "text", "size": 260 },
+    { "t": 4.25, "type": "number", "value": "99", "unit": "KB", "bg": "blue", "fg": "cream" },
+    { "t": 5.1, "type": "word", "lines": ["不用装"], "bg": "ink", "fg": "cream", "size": 250 },
+    { "t": 5.95, "type": "word", "lines": ["不上传"], "bg": "cream", "fg": "text", "size": 250 },
+    { "t": 6.8, "type": "word", "lines": ["不用注册"], "bg": "ink", "fg": "cream", "size": 240 },
+    { "t": 7.65, "type": "word", "lines": ["全在浏览器"], "bg": "cream", "fg": "text", "size": 230 },
+    { "t": 8.5, "type": "word", "lines": ["压到你要的数"], "bg": "ink", "fg": "cream", "size": 210 },
+    { "t": 9.2, "type": "word", "lines": ["就这一步"], "bg": "cream", "fg": "text", "size": 250 },
+    { "t": 10.0, "type": "endcard", "bg": "cream", "brand": "YOUR BRAND", "tagline": "一句话说清价值", "url": "example.com", "cta": "免费 · 打开就能用" }
+  ]
+}

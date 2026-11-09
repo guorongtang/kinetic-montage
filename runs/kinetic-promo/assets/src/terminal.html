@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  html, body { margin: 0; background: #0b0b0d; color: #e6e6e6;
+    font-family: "SF Mono", ui-monospace, Menlo, monospace; }
+  .win { width: 1600px; height: 1000px; box-sizing: border-box; padding: 44px 56px; }
+  .bar { display: flex; gap: 10px; align-items: center; margin-bottom: 30px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .name { margin-left: 16px; color: #8a8a90; font-size: 28px; }
+  pre { margin: 0; font-size: 34px; line-height: 1.56; white-space: pre; }
+  .g { color: #7ee787; } .m { color: #8a8a90; } .w { color: #f3f0e8; }
+  .b { color: #79c0ff; }
+</style></head>
+<body>
+<div class="win">
+  <div class="bar">
+    <span class="dot" style="background:#ff5f57"></span>
+    <span class="dot" style="background:#febc2e"></span>
+    <span class="dot" style="background:#28c840"></span>
+    <span class="name">kinetic — build</span>
+  </div>
+<pre><span class="m">$</span> <span class="w">kinetic build .</span>
+<span class="w">frames</span> <span class="b">900</span> <span class="m">in 36.5s</span>
+<span class="w">audio</span>  <span class="m">out/master.wav (built)</span>
+<span class="w">video</span>  <span class="w">out/v13.mp4</span>
+<span class="w">qa</span>     <span class="g">PASS</span> <span class="m">→ out/qa.md</span>
+  <span class="g">✅</span> <span class="w">duration</span> <span class="m">30s</span>
+  <span class="g">✅</span> <span class="w">frames</span>   <span class="m">900</span>
+  <span class="g">✅</span> <span class="w">loudness</span> <span class="m">-15.1 LUFS</span>
+  <span class="g">✅</span> <span class="w">PSNR</span>     <span class="m">99 / 99</span>
+  <span class="g">✅</span> <span class="w">cuts</span>     <span class="m">19.3 / 10s</span></pre>
+</div>
+</body></html>
