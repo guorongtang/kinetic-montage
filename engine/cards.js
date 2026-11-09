@@ -168,11 +168,19 @@
     }
     if (s.caption) {
       const e = eo5(clamp(p * 2.4));
-      const col = KM.color(film, s.bg) === cream ? KM.color(film, 'text') : cream;
+      const size = 54;
+      const px = 26;
+      const py = 16;
       ctx.save();
       ctx.globalAlpha = e;
       ctx.translate(110, H - 120 - (1 - e) * 30);
-      KM.bigText(ctx, film, s.caption, 54, col, 0, 0, 'left', 900);
+      ctx.font = `900 ${size}px ${KM.font(film, 'cjk')}`;
+      const w = ctx.measureText(s.caption).width;
+      ctx.fillStyle = 'rgba(6,6,8,.82)';
+      ctx.beginPath();
+      ctx.roundRect(-px, -size / 2 - py, w + px * 2, size + py * 2, 12);
+      ctx.fill();
+      KM.bigText(ctx, film, s.caption, size, cream, 0, 0, 'left', 900);
       ctx.restore();
     }
   }
