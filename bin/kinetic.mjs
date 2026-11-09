@@ -114,8 +114,8 @@ function fitGate(root, requireFit) {
 }
 
 
-function load(dir) {
-  const p = loadProject(dir);
+function load(dir, options) {
+  const p = loadProject(dir, options);
   if (p.warnings.length) {
     console.log('warnings:');
     for (const w of p.warnings) console.log('  ⚠ ' + w);
@@ -239,7 +239,7 @@ async function main() {
     return;
   }
 
-  const { root, film } = load(dir);
+  const { root, film } = load(dir, { allowMissingVo: cmd === 'vo' });
 
   if (cmd === 'vo') {
     if (!flags.text) throw new Error('vo requires --text <vo.txt>');
