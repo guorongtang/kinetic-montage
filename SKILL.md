@@ -125,6 +125,21 @@ cd my-film
 支持三种格式：`sentences[].words[]`、`words[]`、扁平数组。
 没有时间戳就先手工写 `timeline.json`，不要硬猜。
 
+**也可以用 `kinetic vo` 一次生成整条旁白**（ListenHub TTS）：
+
+```bash
+$K vo . --text vo.txt \
+  --speaker chat-girl-105-cn --speed 1.3 \
+  --at 0.2 --tail 0.5 --use
+```
+
+- 一次调用生成整段，**不要一句一次**；逐句生成会在句间留下 0.8–1.0s 的拼接空洞。
+- `--speaker` 锁定音色；`--speed` 锁定语速；返回值里的 speaker / speed / text 会逐项校验，不对就报错。
+- `--tail` 是片尾留给音乐的最短时间。`vo` 会量实际时长，**如果旁白结束晚于 `duration - tail`，直接失败**，不会让视频结束了旁白还在说。
+- `--fit` 可选：超长时从尾部删句重生成（保护 CTA 句，最多 3 次；每次都会花额度）。
+- `--use` 可选：只把 `timeline.audio` 改成 `build`（`vo` + 音乐），**不碰任何镜头**。
+- 生成后 `check` 会再报一次 vo 的起止；`build` 发现超长会拒绝渲染。
+
 ### ⑤ 生成初版时间轴
 
 ```bash
@@ -156,12 +171,22 @@ $K preview .        # 本地播放器，可拖时间轴
 ```
 
 `check` 的 error 必须清零；warning 要么修，要么明确知道为什么留着。
+如果用了 `kinetic vo`，`check` 会额外打印旁白的起止；超出片长会以 exit 3 结束。
 
 ### ⑧ 出片 + 验收
 
 ```bash
 $K build . --name my-film
 ```
+
+如果只想换旁白、不动画面，先 `mix` 再 `remux`：
+
+```bash
+$K mix .
+$K remux . --video out/old.mp4 --audio out/master.wav --out out/old-vo.mp4
+```
+
+`remux` 用 `-c:v copy` 复制原视频流，只替换音轨；输出后会校验帧数 / 分辨率 / fps 与输入一致，不一致直接报错。
 
 产出：
 

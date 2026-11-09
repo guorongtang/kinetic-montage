@@ -79,6 +79,53 @@ SFX 建议：
 
 ---
 
+## 一次生成整条旁白（推荐）
+
+不要一句一次调用 TTS。逐句生成会在每句头尾留下静音，拼起来就是 0.8–1.0s 的停顿，听起来像念清单。
+
+```bash
+kinetic vo . --text vo.txt \
+  --speaker chat-girl-105-cn --speed 1.3 \
+  --at 0.2 --tail 0.5 --use
+```
+
+| 参数 | 说明 |
+|---|---|
+| `--text` | UTF-8 文本文件；整段一次送入 |
+| `--speaker` | 音色 ID，默认 `chat-girl-105-cn`（晓曼） |
+| `--speed` | 语速倍数，默认 `1.3` |
+| `--at` | 旁白进入时间，默认 `0.2` |
+| `--tail` | 片尾至少留给音乐的时间，默认 `0.5` |
+| `--fit` | 超长时从尾部删句重生成（保护 CTA，最多 3 次，会消耗额度） |
+| `--use` | 只把 `timeline.audio` 改成 `build`，不碰镜头 |
+| `--music-gain` | 只和 `--use` 一起用；不传则沿用项目/预设的音乐增益 |
+
+`vo` 会：
+
+1. 调 `listenhub tts create`，校验返回的 `speakerInnerId`、`speed` 和文本；
+2. 下载到 `assets/audio/vo.mp3`，写 `assets/audio/vo.json`；
+3. 用 `ffprobe` 量实际时长，计算 `at + duration`；
+4. **如果 `at + duration > meta.duration - tail`，直接失败**，不让视频结束了旁白还在说。
+
+`check` 会再报一次：
+
+```text
+✅ vo: 晓曼 1.3x 28.60s at 0.20s → ends 28.80s / 30.00s (tail 1.20s)
+```
+
+`build` 在渲染前再检查一次；不通过就停止，不会产出被截断的旁白。
+
+只换音轨、不重渲染：
+
+```bash
+kinetic mix .
+kinetic remux . --video out/colaos-promo-zh.mp4 --audio out/master.wav --out out/colaos-promo-zh-vo.mp4
+```
+
+`remux` 用 `-c:v copy` 复制原视频流；输出后会对比帧数 / 分辨率 / fps，不一致直接报错。
+
+---
+
 ## 旁白词级时间戳
 
 `kinetic draft` 需要毫秒级词表。支持三种：

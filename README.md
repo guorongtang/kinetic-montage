@@ -176,6 +176,7 @@ open examples/12s-min/out/12s-min.mp4
 ```bash
 npm test          # 12 个参考帧的 PSNR
 npm run test:fit  # 适配判断的单元测试
+npm run test:vo   # 旁白时长/音色/语速校验的单元测试
 npm run regress   # 重建整片，要求 md5 完全一致
 ```
 
@@ -190,13 +191,15 @@ npm run regress   # 重建整片，要求 md5 完全一致
 | `doctor` | 检查 node / ffmpeg / Chromium / 字体 |
 | `fit <fit.json>` | 制作前判断网站/产品适不适合；输出 FIT / HOLD / NOT FIT |
 | `init <dir>` | 生成一个能跑的 project 骨架；`--fit fit.json` 或 `--topic "..."` |
-| `check <dir>` | 检查 schema、素材、文案长度和节奏，不渲染 |
+| `check <dir>` | 检查 schema、素材、文案长度和节奏，不渲染；有 `vo.json` 时同时检查旁白是否超出片长 |
 | `draft <dir> --words <json>` | 按旁白的词级时间戳，自动生成初版镜头表 |
+| `vo <dir> --text <vo.txt>` | 一次生成整条旁白（ListenHub TTS），锁定音色/语速，超出片长直接失败；`--use` 只改 `timeline.audio` |
 | `still <dir> --t 3.2` | 只渲染某一秒，看看这一帧 |
 | `sheet <dir>` | 每个镜头截一张，拼成 `out/sheet.png` 分镜图 |
 | `preview <dir>` | 本地播放器，可以拖时间轴（`http://127.0.0.1:4173`） |
 | `render <dir>` | 只出帧 → `work/frames/` |
 | `mix <dir>` | 只混音 → `out/master.wav` |
+| `remux <dir> --video <in> --audio <wav>` | 只替换音轨，视频流 `-c:v copy`，帧数/分辨率/fps 不变才通过 |
 | `build <dir>` | 渲染 + 混音 + 编码 + QA，一条命令出片；`--require-fit` 强制先过适配判断 |
 | `qa <dir> --video <mp4>` | 单独跑技术 + 风格报告 |
 | `eject <dir>` | 把引擎源码复制进项目，之后允许硬改渲染代码 |

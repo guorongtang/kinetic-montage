@@ -12,6 +12,8 @@ import { scaffold } from '../lib/scaffold.mjs';
 import { draftFromWords } from '../lib/draft.mjs';
 import { startPreview } from '../lib/preview.mjs';
 import { validateFit, evaluateFit, copyFitRecord, writeTopicFit } from '../lib/fit.mjs';
+import { generateVo, checkVoFit } from '../lib/vo.mjs';
+import { remuxVideo } from '../lib/remux.mjs';
 
 const argv = process.argv.slice(2);
 const cmd = argv[0];
@@ -138,8 +140,10 @@ async function main() {
   kinetic sheet <dir>
   kinetic preview <dir> [--port 4173]
   kinetic draft <dir> --words <vo.words.json> [--force]
+  kinetic vo <dir> --text <vo.txt> [--speaker chat-girl-105-cn] [--speed 1.3] [--at 0.2] [--tail 0.5] [--fit] [--use] [--force]
   kinetic render <dir> [--from 0 --to 900] [--require-fit]
   kinetic mix <dir>
+  kinetic remux <dir> --video <in.mp4> --audio <in.wav> [--out out.mp4]
   kinetic build <dir> [--name slug --no-qa --require-fit]
   kinetic qa <dir> [--video path]
   kinetic eject <dir>
@@ -237,10 +241,44 @@ async function main() {
 
   const { root, film } = load(dir);
 
+  if (cmd === 'vo') {
+    if (!flags.text) throw new Error('vo requires --text <vo.txt>');
+    const meta = await generateVo({
+      project: root,
+      film,
+      textFile: flags.text,
+      speakerId: flags.speaker || undefined,
+      speakerName: flags['speaker-name'] || undefined,
+      speed: flags.speed != null ? +flags.speed : undefined,
+      at: flags.at != null ? +flags.at : undefined,
+      tail: flags.tail != null ? +flags.tail : undefined,
+      mode: flags.mode || undefined,
+      language: flags.lang || undefined,
+      fit: !!flags.fit,
+      use: !!flags.use,
+      force: !!flags.force,
+      musicGain: flags['music-gain'] != null ? +flags['music-gain'] : undefined
+    });
+    console.log(
+      `vo ${meta.speakerName} ${meta.speed}x ${meta.duration.toFixed(2)}s → assets/${meta.src}`
+    );
+    console.log(
+      `   at ${meta.at.toFixed(2)}s, ends ${meta.endsAt.toFixed(2)}s / ${meta.filmDuration.toFixed(2)}s ` +
+      `(tail ${(meta.filmDuration - meta.endsAt).toFixed(2)}s)`
+    );
+    if (flags.use) console.log('   timeline.audio → build (vo + music), shots untouched');
+    return;
+  }
+
   if (cmd === 'check') {
     const fp = fingerprint(film);
     console.log('ok:', film.shots.length, 'shots,', film.meta.duration + 's');
     console.log(JSON.stringify(fp, null, 2));
+    const vo = checkVoFit(root, film);
+    if (vo) {
+      console.log(vo.message);
+      if (!vo.ok) process.exitCode = 3;
+    }
     const fitFile = path.join(root, 'fit.json');
     if (fs.existsSync(fitFile)) {
       try {
@@ -282,6 +320,23 @@ async function main() {
   if (cmd === 'mix') {
     const a = mixAudio(root, film);
     console.log('audio', rel(a.file), a.copy ? '(copy)' : '(re-encoded)');
+    return;
+  }
+
+  if (cmd === 'remux') {
+    const video = flags.video && path.resolve(flags.video);
+    if (!video) throw new Error('remux requires --video <in.mp4>');
+    const audio = flags.audio
+      ? path.resolve(flags.audio)
+      : path.join(root, 'out', 'master.wav');
+    const out = flags.out
+      ? path.resolve(flags.out)
+      : path.join(root, 'out', `${path.basename(video, '.mp4')}-vo.mp4`);
+    const r = remuxVideo({ video, audio, out });
+    console.log(
+      `remux ${rel(r.out)}  video ${r.after.frames} frames ${r.after.width}x${r.after.height} ` +
+      `${r.after.duration.toFixed(2)}s (unchanged), audio ${r.audio.duration.toFixed(2)}s`
+    );
     return;
   }
 
@@ -344,6 +399,14 @@ async function main() {
 
   if (cmd === 'build') {
     if (!fitGate(root, !!flags['require-fit'])) return;
+    const vo = checkVoFit(root, film);
+    if (vo && !vo.ok) {
+      console.error(vo.message);
+      console.error('✗ build stopped: VO outlasts the film; cut text or adjust --tail before rendering');
+      process.exitCode = 3;
+      return;
+    }
+    if (vo) console.log(vo.message);
     const name = slug(flags.name || film.meta.title || path.basename(root));
     const framesDir = path.join(root, 'work', 'frames');
     const r = await renderFrames(root, film, {
